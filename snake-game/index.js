@@ -144,6 +144,14 @@ function initWall2() {
   //snake hit wall
   function stop(snake) {
     snake.direction = DIRECTION.STOP;
+    alert("Nabrak Gan !!!");
+
+  }
+  function reStart() {
+    snake1.score = 0;
+    level = 1;
+    wallX = [];
+    wallY = [];
   }
   function hitTheWall(snake) {
     for (let i = 0; i < wallX.length; i++) {
@@ -157,7 +165,8 @@ function initWall2() {
         ) {
            
             stop(snake);
-            alert("Nabrak Gan !!!");
+            reStart();
+      
         }
       }
   
@@ -171,7 +180,8 @@ function initWall2() {
         ) {
             
             stop(snake);
-            alert("Nabrak Gan !!!");
+            reStart();
+            
         }
       }
     }
