@@ -81,10 +81,12 @@ function draw() {
         let ctx = snakeCanvas.getContext("2d");
 
         ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-        
-        drawCell(ctx, snake1.head.x, snake1.head.y, snake1.color);
+        var headImg = document.getElementById("head");
+        ctx.drawImage(headImg, snake1.head.x * CELL_SIZE, snake1.head.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+       
         for (let i = 1; i < snake1.body.length; i++) {
-            drawCell(ctx, snake1.body[i].x, snake1.body[i].y, snake1.color);
+            var bodyImg = document.getElementById("body");
+            ctx.drawImage(bodyImg, snake1.body[i].x * CELL_SIZE, snake1.body[i].y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
         }
         drawCell(ctx, snake2.head.x, snake2.head.y, snake2.color);
         for (let i = 1; i < snake2.body.length; i++) {
