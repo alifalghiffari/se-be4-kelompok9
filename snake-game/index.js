@@ -248,6 +248,7 @@ function draw() {
 
         ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
+
         //membuat kepala ular
         var headImg = document.getElementById("head");
         ctx.drawImage(headImg, snake1.head.x * CELL_SIZE, snake1.head.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
@@ -256,6 +257,7 @@ function draw() {
             //membuat body ular
             var bodyImg = document.getElementById("body");
             ctx.drawImage(bodyImg, snake1.body[i].x * CELL_SIZE, snake1.body[i].y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+
         }
         
 
