@@ -80,8 +80,13 @@ function initSnake(color) {
         score: 0,
     }
 }
-let snake1 = initSnake("purple");
 
+let lifes = {
+  color: "green",
+  position: initPosition(),
+}
+
+let snake1 = initSnake("purple");
 
 let apple1 = {
     color: "red",
@@ -91,6 +96,17 @@ let apple1 = {
 let apple2 = {
     color: "red",
     position: initPosition(),
+}
+
+function isPrime(number) {
+  let divider = 0;
+
+  for (let i = 1; i <= number; i++) {
+      if (number % i == 0) {
+          divider++
+      }
+  }
+  return (divider == 2) ? true : false
 }
 
 // initial wall
@@ -131,6 +147,20 @@ function initWall2() {
   }
   //end initial wall
 
+  function drawLife(ctx, lifes) {
+    // ctx.fillStyle = lifes.color;
+
+    // ctx.fillRect(lifes.position.x * CELL_SIZE, lifes.position.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+    let img = document.getElementById("life");
+        ctx.drawImage(
+            img,
+            lifes.position.x * CELL_SIZE,
+            lifes.position.y * CELL_SIZE,
+            CELL_SIZE,
+            CELL_SIZE
+        );
+}
+
   // create wall
   function createWall() {
     let wallCanvas = document.getElementById("snakeBoard");
@@ -152,6 +182,7 @@ function initWall2() {
     level = 1;
     wallX = [];
     wallY = [];
+    MOVE_INTERVAL=150;
   }
   function hitTheWall(snake) {
     for (let i = 0; i < wallX.length; i++) {
@@ -192,7 +223,6 @@ function drawCell(ctx, x, y, color) {
     ctx.fillStyle = color;
     ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
 }
-
 
 function drawScore(snake) {
     let scoreCanvas;
@@ -251,8 +281,6 @@ function draw() {
     
     setInterval(function() {
 
-        
-
         let snakeCanvas = document.getElementById("snakeBoard");
         let ctx = snakeCanvas.getContext("2d");
 
@@ -270,7 +298,6 @@ function draw() {
 
         }
         
-
         let img = document.getElementById("apple");
         ctx.drawImage(
             img,
@@ -286,6 +313,10 @@ function draw() {
             CELL_SIZE,
             CELL_SIZE
           );
+
+          if (isPrime(snake1.score)) {
+            drawLife(ctx, lifes);
+          }
          
          createWall(); 
         drawScore(snake1);
@@ -312,14 +343,25 @@ function teleport(snake) {
 }
 
 function eat(snake, apple1, apple2) {
-    if (snake.head.x == apple1.position.x && snake.head.y == apple1.position.y ||
-        snake.head.x == apple2.position.x && snake.head.y == apple2.position.y) {
-        apple1.position = initPosition();
-        apple2.position = initPosition();
-        snake.score++;
-        
-        snake.body.push({x: snake.head.x, y: snake.head.y});
-    }
+  if (snake.head.x == apple1.position.x && snake.head.y == apple1.position.y) {
+      apple1.position = initPosition();
+      snake.score++;
+      snake.scoreReset++;
+      snake.body.push({ x: snake.head.x, y: snake.head.y });
+  }
+  if (snake.head.x == apple2.position.x && snake.head.y == apple2.position.y) {
+      apple2.position = initPosition();
+      snake.score++;
+      snake.scoreReset++;
+      snake.body.push({ x: snake.head.x, y: snake.head.y });
+  }
+
+    if (snake.head.x == lifes.position.x && snake.head.y == lifes.position.y && isPrime(snake.score)) {
+      lifes.position = initPosition();
+      snake.lifes++;
+      } 
+  
+    snake.lifes = 0;
 }
 
 function moveLeft(snake) {
@@ -365,6 +407,7 @@ function checkCollision(snakes) {
     if (isCollide) {
         alert("Game over");
         snake1 = initSnake("purple");
+        MOVE_INTERVAL=150;
        
     }
     return isCollide;
