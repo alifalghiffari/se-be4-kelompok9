@@ -86,6 +86,7 @@ function initSnake(color) {
     ...initHeadAndBody(),
     direction: initDirection(),
     score: 0,
+    health: 3,
   };
 }
 
@@ -94,7 +95,7 @@ let lifes = {
   position: initPosition(),
 };
 
-let snake1 = initSnake("purple");
+let snake1 = initSnake("red");
 
 let apple1 = {
   color: "red",
@@ -117,10 +118,8 @@ function isPrime(number) {
   return divider == 2 ? true : false;
 }
 
+// start draw life
 function drawLife(ctx, lifes) {
-  // ctx.fillStyle = lifes.color;
-
-  // ctx.fillRect(lifes.position.x * CELL_SIZE, lifes.position.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
   let img = document.getElementById("life");
   ctx.drawImage(
     img,
@@ -130,6 +129,7 @@ function drawLife(ctx, lifes) {
     CELL_SIZE
   );
 }
+// end draw life
 
 // start draw cell
 function drawCell(ctx, x, y, color) {
@@ -137,6 +137,21 @@ function drawCell(ctx, x, y, color) {
   ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
 }
 // end draw cell
+
+// start draw level
+function drawLevel() {
+  let levelCanvas = document.getElementById("levelBoard");
+
+  if (levelCanvas.getContext) {
+    let levelCtx = levelCanvas.getContext("2d");
+
+    levelCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    levelCtx.font = "25px Arial";
+    levelCtx.fillStyle = "blue";
+    levelCtx.fillText("Level: " + level, 13, levelCanvas.scrollHeight / 2);
+  }
+}
+// end draw level
 
 // start draw score
 function drawScore(snake) {
@@ -148,14 +163,48 @@ function drawScore(snake) {
     scoreCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
     scoreCtx.font = "25px Arial";
     scoreCtx.fillStyle = snake.color;
-    scoreCtx.fillText(
-      "Score: " + snake.score,
-      10,
-      scoreCanvas.scrollHeight / 2
-    );
+    scoreCtx.fillText("Score: " + snake.score, 7, scoreCanvas.scrollHeight / 2);
   }
 }
 // end draw score
+
+// start draw speed
+function drawSpeed() {
+  let speedCanvas = document.getElementById("speedBoard");
+
+  if (speedCanvas.getContext) {
+    let speedCtx = speedCanvas.getContext("2d");
+
+    speedCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    speedCtx.font = "25px Arial";
+    speedCtx.fillStyle = "#8A2BE2";
+    speedCtx.fillText(
+      "Speed : " + MOVE_INTERVAL,
+      7,
+      speedCanvas.scrollHeight / 2
+    );
+  }
+}
+// end draw speed
+
+// start draw health
+function drawHealth(snake) {
+  let healthCanvas = document.getElementById("healthBoard");
+
+  if (healthCanvas.getContext) {
+    let healthCtx = healthCanvas.getContext("2d");
+
+    healthCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    healthCtx.font = "25px Arial";
+    healthCtx.fillStyle = "green";
+    healthCtx.fillText(
+      "Lifes : " + snake.health,
+      10,
+      healthCanvas.scrollHeight / 2
+    );
+  }
+}
+// end draw health
 
 // initial wall
 function initWall2() {
@@ -342,8 +391,10 @@ function draw() {
     }
 
     createWall();
+    drawLevel();
     drawScore(snake1);
     drawSpeed(snake1);
+    drawHealth(snake1);
     initLevel(snake1);
   }, REDRAW_INTERVAL);
 }
@@ -386,6 +437,7 @@ function eat(snake, apple1, apple2) {
   ) {
     lifes.position = initPosition();
     eatSound.play();
+    snake.health++;
     snake.lifes++;
   }
 
