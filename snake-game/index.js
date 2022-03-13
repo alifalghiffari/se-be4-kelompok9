@@ -152,6 +152,7 @@ function initWall2() {
     level = 1;
     wallX = [];
     wallY = [];
+    MOVE_INTERVAL=150;
   }
   function hitTheWall(snake) {
     for (let i = 0; i < wallX.length; i++) {
@@ -365,6 +366,7 @@ function checkCollision(snakes) {
     if (isCollide) {
         alert("Game over");
         snake1 = initSnake("purple");
+        MOVE_INTERVAL=150;
        
     }
     return isCollide;
