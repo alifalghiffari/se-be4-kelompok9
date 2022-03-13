@@ -343,14 +343,18 @@ function teleport(snake) {
 }
 
 function eat(snake, apple1, apple2) {
-    if (snake.head.x == apple1.position.x && snake.head.y == apple1.position.y ||
-        snake.head.x == apple2.position.x && snake.head.y == apple2.position.y) {
-        apple1.position = initPosition();
-        apple2.position = initPosition();
-        snake.score++;
-        
-        snake.body.push({x: snake.head.x, y: snake.head.y});
-    }
+  if (snake.head.x == apple1.position.x && snake.head.y == apple1.position.y) {
+      apple1.position = initPosition();
+      snake.score++;
+      snake.scoreReset++;
+      snake.body.push({ x: snake.head.x, y: snake.head.y });
+  }
+  if (snake.head.x == apple2.position.x && snake.head.y == apple2.position.y) {
+      apple2.position = initPosition();
+      snake.score++;
+      snake.scoreReset++;
+      snake.body.push({ x: snake.head.x, y: snake.head.y });
+  }
 
     if (snake.head.x == lifes.position.x && snake.head.y == lifes.position.y && isPrime(snake.score)) {
       lifes.position = initPosition();
