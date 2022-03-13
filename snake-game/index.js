@@ -140,17 +140,20 @@ function drawCell(ctx, x, y, color) {
 
 // start draw score
 function drawScore(snake) {
-  let scoreCanvas;
-  if (snake.color == snake1.color) {
-    scoreCanvas = document.getElementById("score1Board");
+  let scoreCanvas = document.getElementById("scoreBoard");
+
+  if (scoreCanvas.getContext) {
+    let scoreCtx = scoreCanvas.getContext("2d");
+
+    scoreCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+    scoreCtx.font = "25px Arial";
+    scoreCtx.fillStyle = snake.color;
+    scoreCtx.fillText(
+      "Score: " + snake.score,
+      10,
+      scoreCanvas.scrollHeight / 2
+    );
   }
-
-  let scoreCtx = scoreCanvas.getContext("2d");
-
-  scoreCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-  scoreCtx.font = "30px Arial";
-  scoreCtx.fillStyle = snake.color;
-  scoreCtx.fillText(snake.score, 10, scoreCanvas.scrollHeight / 2);
 }
 // end draw score
 
@@ -267,6 +270,7 @@ function initLevel(snake) {
   if (level === 5 && snake.score === 25) {
     doneAudio.play();
     alert("Congratulation");
+    reStart();
   }
 }
 
@@ -339,6 +343,7 @@ function draw() {
 
     createWall();
     drawScore(snake1);
+    drawSpeed(snake1);
     initLevel(snake1);
   }, REDRAW_INTERVAL);
 }
