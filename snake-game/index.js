@@ -1,5 +1,5 @@
 const CELL_SIZE = 20;
-const CANVAS_SIZE = 600;
+const CANVAS_SIZE = 400;
 const REDRAW_INTERVAL = 50;
 const WIDTH = CANVAS_SIZE / CELL_SIZE;
 const HEIGHT = CANVAS_SIZE / CELL_SIZE;
@@ -18,34 +18,34 @@ var wallX = [];
 var wallY = [];
 var levelWall2 = [
   {
-    x1: 8,
-    x2: 22,
+    x1: 5,
+    x2: 15,
     y: 10,
   },
   {
-    x1: 8,
-    x2: 22,
-    y: 5,
+    x1: 5,
+    x2: 15,
+    y: 3,
   },
 ];
 var levelWall3 = [
   {
-    x1: 8,
-    x2: 22,
+    x1: 5,
+    x2: 15,
     y: 15,
   },
 ];
 var levelWall4 = [
   {
-    x1: 8,
-    x2: 22,
+    x1: 5,
+    x2: 15,
     y: 20,
   },
 ];
 var levelWall5 = [
   {
-    x1: 8,
-    x2: 22,
+    x1: 5,
+    x2: 15,
     y: 25,
   },
 ];
