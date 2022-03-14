@@ -27,36 +27,36 @@ var wallX = [];
 var wallY = [];
 var levelWall2 = [
   {
-    x1: 5,
-    x2: 15,
-    y: 10,
-  },
-  {
-    x1: 5,
-    x2: 15,
-    y: 3,
-  },
+      x1: 5,
+      x2: 20,
+      y: 5,
+  }
 ];
 var levelWall3 = [
   {
-    x1: 5,
-    x2: 15,
-    y: 15,
-  },
+      x1: 4,
+      x2: 20,
+      y: 10,
+  }
 ];
 var levelWall4 = [
   {
-    x1: 5,
-    x2: 15,
-    y: 20,
-  },
+      x1: 5,
+      x2: 20,
+      y: 15,
+  }
 ];
 var levelWall5 = [
   {
-    x1: 5,
-    x2: 15,
-    y: 25,
+      x: 5,
+      y1: 5,
+      y2: 20,
   },
+  {
+      x: 19,
+      y1: 7,
+      y2: 20,
+  }
 ];
 // end declare wall
 
@@ -207,22 +207,7 @@ function drawSpeed() {
 // end draw speed
 
 // start draw health
-function drawHealth(snake) {
-  let healthCanvas = document.getElementById("healthBoard");
 
-  if (healthCanvas.getContext) {
-    let healthCtx = healthCanvas.getContext("2d");
-
-    healthCtx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-    healthCtx.font = "25px Arial";
-    healthCtx.fillStyle = "green";
-    healthCtx.fillText(
-      "Lifes : " + snake.health,
-      10,
-      healthCanvas.scrollHeight / 2
-    );
-  }
-}
 // end draw health
 
 // initial wall
@@ -320,20 +305,22 @@ function initLevel(snake) {
     levelUp();
     MOVE_INTERVAL -= 20;
     initWall2();
+    
   }
   if (level === 2 && snake.score === 10) {
     levelUp();
     MOVE_INTERVAL -= 20;
+    initWall3();
   }
   if (level === 3 && snake.score === 15) {
     levelUp();
     MOVE_INTERVAL -= 20;
-    initWall3();
+    initWall4();
   }
   if (level === 4 && snake.score === 20) {
     levelUp();
     MOVE_INTERVAL -= 20;
-    initWall4();
+    initWall5();
   }
   if (level === 5 && snake.score === 25) {
     doneAudio.play();
@@ -433,7 +420,7 @@ function draw() {
     drawLevel();
     drawScore(snake1);
     drawSpeed(snake1);
-    //drawHealth(snake1);
+  
     initLevel(snake1);
   }, REDRAW_INTERVAL);
 }
