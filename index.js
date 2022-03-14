@@ -39,24 +39,24 @@ var levelWall2 = [
 ];
 var levelWall3 = [
   {
-    x1: 4,
-    x2: 15,
-    y: 7,
-  },
+      x1: 4,
+      x2: 15,
+      y: 7,
+  }
 ];
 var levelWall4 = [
   {
-    x1: 4,
-    x2: 15,
-    y: 11,
-  },
+      x1: 4,
+      x2: 15,
+      y: 11,
+  }
 ];
 var levelWall5 = [
   {
-    x1: 4,
-    x2: 15,
-    y: 15,
-  },
+      x: 4,
+      y1: 15,
+      y2: 15,
+  }
 ];
 // end declare wall
 
@@ -304,6 +304,7 @@ function initLevel(snake) {
     levelUp(level);
     MOVE_INTERVAL -= 20;
     initWall2();
+    
   }
   if (level === 2 && snake.score === 10) {
     levelUp();
@@ -520,6 +521,7 @@ function moveUp(snake) {
 function checkCollision(snakes) {
   let isCollide = false;
   for (let i = 0; i < snakes.length; i++) {
+
     for (let j = 0; j < snakes.length; j++) {
       for (let k = 1; k < snakes[j].body.length; k++) {
         if (
@@ -534,6 +536,20 @@ function checkCollision(snakes) {
             stop(snake1);
             reStart();
             isCollide = true;
+
+      for (let j = 0; j < snakes.length; j++) {
+          for (let k = 1; k < snakes[j].body.length; k++) {
+              if (snakes[i].head.x == snakes[j].body[k].x && snakes[i].head.y == snakes[j].body[k].y) {
+                  life.length--;
+                   deadAudio.play();
+                  sum -= 20;
+                  if(life.length == 0){
+                      
+                      isCollide = true;
+                  }
+                  
+              }
+
           }
         }
       }
@@ -542,6 +558,7 @@ function checkCollision(snakes) {
 
   //check collision wall and snake
   for (let i = 0; i < wallX.length; i++) {
+
     if (
       snake1.head.x === wallX[i] &&
       (snake1.direction == 2 || snake1.direction == 3)
@@ -555,9 +572,21 @@ function checkCollision(snakes) {
           snake1 = initSnake();
           stop(snake1);
           isCollide = true;
+
+    if (snake1.head.x === wallX[i] && (snake1.direction == 2 || snake1.direction == 3)) {
+        if (snake1.head.y === wallY[i] || snake1.head.y === wallY[i]) {
+            deadAudio.play();
+            sum -= 20;
+            life.length--;
+            if (life.length == 0) {
+              
+                isCollide = true;
+            }
+
         }
       }
     }
+
     if (
       snake1.head.y === wallY[i] &&
       (snake1.direction == 0 || snake1.direction == 1)
@@ -571,6 +600,16 @@ function checkCollision(snakes) {
           snake1 = initSnake();
           stop(snake1);
           isCollide = true;
+
+    if (snake1.head.y === wallY[i] && (snake1.direction == 0 || snake1.direction == 1)) {
+        if (snake1.head.x === wallX[i] || snake1.head.x === wallX[i]) {
+            deadAudio.play();
+            sum -= 20;
+            snake1.health--;
+            if (snake1.health == 0) {
+                isCollide = true;
+            }
+
         }
       }
     }
@@ -599,20 +638,6 @@ function checkCollision(snakes) {
   if (isCollide) {
     deadAudio.play();
     alert("Game over");
-    // life = [
-    //   {
-    //       x: sum,
-    //       y: 0
-    //   },
-    //   {
-    //       x: sum + 20,
-    //       y: 0
-    //   },
-    //   {
-    //       x: sum + 40,
-    //       y: 0
-    //   },
-    // ];
     location.reload();
     MOVE_INTERVAL = 150;
     snake1 = initSnake("purple");
