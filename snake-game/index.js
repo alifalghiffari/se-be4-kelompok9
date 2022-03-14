@@ -11,7 +11,7 @@ const DIRECTION = {
   DOWN: 3,
 };
 let MOVE_INTERVAL = 150;
-let health = 3;
+
 let eatSound = new Audio();
 let levelAudio = new Audio();
 let deadAudio = new Audio();
@@ -21,22 +21,7 @@ eatSound.src = "./assets/audio/eat.mp3";
 levelAudio.src = "./assets/audio/level-up.mp3";
 deadAudio.src = "./assets/audio/game-over.mp3";
 doneAudio.src = "./assets/audio/done.mp3";
-
-var life = [
-  {
-      x: sum,
-      y: 0
-  },
-  {
-      x: sum + 20,
-      y: 0
-  },
-  {
-      x: sum + 40,
-      y: 0
-  },
-];
-
+var sum = 0;
 // declare wall
 var wallX = [];
 var wallY = [];
@@ -101,11 +86,23 @@ function initSnake(color) {
     ...initHeadAndBody(),
     direction: initDirection(),
     score: 0,
-    lifes:0
-    
+    health: 3,
   };
 }
-
+var life = [
+  {
+      x: sum,
+      y: 0
+  },
+  {
+      x: sum + 20,
+      y: 0
+  },
+  {
+      x: sum + 40,
+      y: 0
+  },
+];
 let lifes = {
   color: "green",
   position: initPosition(),
@@ -144,6 +141,9 @@ function drawLife(ctx, lifes) {
     CELL_SIZE,
     CELL_SIZE
   );
+}
+if (isPrime(snake1.score)) {
+  drawLife(ctx, lifes);
 }
 // end draw life
 
@@ -204,7 +204,7 @@ function drawSpeed() {
 // end draw speed
 
 // start draw health
-function drawHealth() {
+function drawHealth(snake) {
   let healthCanvas = document.getElementById("healthBoard");
 
   if (healthCanvas.getContext) {
@@ -214,7 +214,7 @@ function drawHealth() {
     healthCtx.font = "25px Arial";
     healthCtx.fillStyle = "green";
     healthCtx.fillText(
-      "Lifes : " + health,
+      "Lifes : " + snake.health,
       10,
       healthCanvas.scrollHeight / 2
     );
@@ -272,9 +272,9 @@ function createWall() {
 
 //snake hit wall
 function stop(snake) {
-  deadAudio.play();
+ 
   snake.direction = DIRECTION.STOP;
-  //alert("Nabrak Gan !!!");
+  
 }
 
 function reStart() {
@@ -292,12 +292,7 @@ function hitTheWall(snake) {
       (snake.direction == 2 || snake.direction == 3)
     ) {
       if (snake.head.y - 1 === wallY[i] || snake.head.y + 1 === wallY[i]) {
-
-        if(health === 0){
-          alert("mati");
-        }
         stop(snake);
-        health = 3
         reStart();
       }
     }
@@ -308,7 +303,6 @@ function hitTheWall(snake) {
     ) {
       if (snake.head.x - 1 === wallX[i] || snake.head.x + 1 === wallX[i]) {
         stop(snake);
-        health = 3
         reStart();
       }
     }
@@ -416,7 +410,7 @@ function draw() {
     drawLevel();
     drawScore(snake1);
     drawSpeed(snake1);
-    drawHealth();
+    drawHealth(snake1);
     initLevel(snake1);
   }, REDRAW_INTERVAL);
 }
@@ -452,16 +446,19 @@ function eat(snake, apple1, apple2) {
     snake.score++;
     snake.scoreReset++;
     snake.body.push({ x: snake.head.x, y: snake.head.y });
-  } else if (
-    snake.head.x == lifes.position.x &&
-    snake.head.y == lifes.position.y &&
-    isPrime(snake.score)
-  ) {
+  }else if (snake.head.x == lifes.position.x && snake.head.y == lifes.position.y && isPrime(snake.score)) {
     lifes.position = initPosition();
+    snake.health++;
+    //var msk = document.getElementById("getHealth");
     eatSound.play();
-    health++;
-   //snake.lifes++;
-  }
+    for(var j = 0; j < snake.lifes; j++){
+        if(snake.health === 1){
+            life.push({x: sum + 60, y: 0});
+            sum += 20;
+        }
+    } 
+    snake.lifes = 0;
+}
 
   snake.lifes = 0;
 }
@@ -470,21 +467,21 @@ function moveLeft(snake) {
   snake.head.x--;
   teleport(snake);
   eat(snake, apple1, apple2);
-  //hitTheWall(snake);
+ // hitTheWall(snake);
 }
 
 function moveRight(snake) {
   snake.head.x++;
   teleport(snake);
   eat(snake, apple1, apple2);
-  //hitTheWall(snake);
+ // hitTheWall(snake);
 }
 
 function moveDown(snake) {
   snake.head.y++;
   teleport(snake);
   eat(snake, apple1, apple2);
-  //hitTheWall(snake);
+ // hitTheWall(snake);
 }
 
 function moveUp(snake) {
@@ -493,7 +490,6 @@ function moveUp(snake) {
   eat(snake, apple1, apple2);
  // hitTheWall(snake);
 }
-var sum = 0;
 
 function checkCollision(snakes) {
   let isCollide = false;
@@ -501,11 +497,12 @@ function checkCollision(snakes) {
       for (let j = 0; j < snakes.length; j++) {
           for (let k = 1; k < snakes[j].body.length; k++) {
               if (snakes[i].head.x == snakes[j].body[k].x && snakes[i].head.y == snakes[j].body[k].y) {
-                  
-                life.length--;
+                  snake1.health--;
+                   deadAudio.play();
+                   
                   sum -= 20;
-                  
-                  if(life.length == 0){
+                  if(snake1.health == 0){
+                      
                       isCollide = true;
                   }
                   
@@ -516,32 +513,30 @@ function checkCollision(snakes) {
 
   //check collision wall and snake
   for (let i = 0; i < wallX.length; i++) {
-    if (snakes.head.x === wallX[i] && (snakes.direction == 2 || snakes.direction == 3)) {
-        if (snakes.head.y === wallY[i] || snakes.head.y === wallY[i]) {
-            
-          soundEffect.play();
-            snakes.life--;
-            
-            
-            if (snakes.life == 0) {
+    if (snake1.head.x === wallX[i] && (snake1.direction == 2 || snake1.direction == 3)) {
+        if (snake1.head.y === wallY[i] || snake1.head.y === wallY[i]) {
+            deadAudio.play();
+       
+            snake1.health--;
+            if (snake1.health == 0) {
+              
                 isCollide = true;
             }
         }
     }
-    if (snakes.head.y === wallY[i] && (snakes.direction == 0 || snakes.direction == 1)) {
-        if (snakes.head.x === wallX[i] || snakes.head.x === wallX[i]) {
-            
-          soundEffect.play();
-            snakes.life--;
-            
+    if (snake1.head.y === wallY[i] && (snake1.direction == 0 || snake1.direction == 1)) {
+        if (snake1.head.x === wallX[i] || snake1.head.x === wallX[i]) {
+            deadAudio.play();
            
-            if (snakes.life == 0) {
+            snake1.health--;
+            if (snake1.health == 0) {
                 isCollide = true;
             }
         }
     }
 }
-  //check apple on obstacle
+
+  //code for check apple and health so it doesn't appear in the obstacle
   for (let i = 0; i < wallX.length; i++) {
       if (apple1.position.x === wallX[i]) {
           if (apple1.position.y === wallY[i] || apple1.position.y === wallY[i]) {
@@ -564,7 +559,20 @@ function checkCollision(snakes) {
   if (isCollide) {
           deadAudio.play();
           alert("Game over");
-         
+          // life = [
+          //   {
+          //       x: sum,
+          //       y: 0
+          //   },
+          //   {
+          //       x: sum + 20,
+          //       y: 0
+          //   },
+          //   {
+          //       x: sum + 40,
+          //       y: 0
+          //   },
+          // ];
           location.reload();
           MOVE_INTERVAL = 150;
           snake1 = initSnake("purple");
@@ -596,7 +604,6 @@ function move(snake) {
   } else {
     initGame();
   }
- 
 }
 
 function moveBody(snake) {
