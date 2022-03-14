@@ -27,30 +27,30 @@ var wallX = [];
 var wallY = [];
 var levelWall2 = [
   {
-      x1: 5,
-      x2: 20,
-      y: 5,
+      x1: 4,
+      x2: 15,
+      y: 3,
   }
 ];
 var levelWall3 = [
   {
       x1: 4,
-      x2: 20,
-      y: 10,
+      x2: 15,
+      y: 7,
   }
 ];
 var levelWall4 = [
   {
-      x1: 5,
-      x2: 20,
-      y: 15,
+      x1: 4,
+      x2: 15,
+      y: 11,
   }
 ];
 var levelWall5 = [
   {
-      x: 5,
-      y1: 5,
-      y2: 20,
+      x: 4,
+      y1: 15,
+      y2: 15,
   },
   {
       x: 19,
