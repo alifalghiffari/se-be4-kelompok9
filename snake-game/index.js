@@ -11,7 +11,7 @@ const DIRECTION = {
   DOWN: 3,
 };
 let MOVE_INTERVAL = 150;
-
+let health = 3;
 let eatSound = new Audio();
 let levelAudio = new Audio();
 let deadAudio = new Audio();
@@ -21,6 +21,21 @@ eatSound.src = "./assets/audio/eat.mp3";
 levelAudio.src = "./assets/audio/level-up.mp3";
 deadAudio.src = "./assets/audio/game-over.mp3";
 doneAudio.src = "./assets/audio/done.mp3";
+
+var life = [
+  {
+      x: sum,
+      y: 0
+  },
+  {
+      x: sum + 20,
+      y: 0
+  },
+  {
+      x: sum + 40,
+      y: 0
+  },
+];
 
 // declare wall
 var wallX = [];
@@ -86,7 +101,8 @@ function initSnake(color) {
     ...initHeadAndBody(),
     direction: initDirection(),
     score: 0,
-    health: 3,
+    lifes:0
+    
   };
 }
 
@@ -188,7 +204,7 @@ function drawSpeed() {
 // end draw speed
 
 // start draw health
-function drawHealth(snake) {
+function drawHealth() {
   let healthCanvas = document.getElementById("healthBoard");
 
   if (healthCanvas.getContext) {
@@ -198,7 +214,7 @@ function drawHealth(snake) {
     healthCtx.font = "25px Arial";
     healthCtx.fillStyle = "green";
     healthCtx.fillText(
-      "Lifes : " + snake.health,
+      "Lifes : " + health,
       10,
       healthCanvas.scrollHeight / 2
     );
@@ -258,7 +274,7 @@ function createWall() {
 function stop(snake) {
   deadAudio.play();
   snake.direction = DIRECTION.STOP;
-  alert("Nabrak Gan !!!");
+  //alert("Nabrak Gan !!!");
 }
 
 function reStart() {
@@ -276,7 +292,12 @@ function hitTheWall(snake) {
       (snake.direction == 2 || snake.direction == 3)
     ) {
       if (snake.head.y - 1 === wallY[i] || snake.head.y + 1 === wallY[i]) {
+
+        if(health === 0){
+          alert("mati");
+        }
         stop(snake);
+        health = 3
         reStart();
       }
     }
@@ -287,6 +308,7 @@ function hitTheWall(snake) {
     ) {
       if (snake.head.x - 1 === wallX[i] || snake.head.x + 1 === wallX[i]) {
         stop(snake);
+        health = 3
         reStart();
       }
     }
@@ -394,7 +416,7 @@ function draw() {
     drawLevel();
     drawScore(snake1);
     drawSpeed(snake1);
-    drawHealth(snake1);
+    drawHealth();
     initLevel(snake1);
   }, REDRAW_INTERVAL);
 }
@@ -437,8 +459,8 @@ function eat(snake, apple1, apple2) {
   ) {
     lifes.position = initPosition();
     eatSound.play();
-    snake.health++;
-    snake.lifes++;
+    health++;
+   //snake.lifes++;
   }
 
   snake.lifes = 0;
@@ -448,50 +470,105 @@ function moveLeft(snake) {
   snake.head.x--;
   teleport(snake);
   eat(snake, apple1, apple2);
-  hitTheWall(snake);
+  //hitTheWall(snake);
 }
 
 function moveRight(snake) {
   snake.head.x++;
   teleport(snake);
   eat(snake, apple1, apple2);
-  hitTheWall(snake);
+  //hitTheWall(snake);
 }
 
 function moveDown(snake) {
   snake.head.y++;
   teleport(snake);
   eat(snake, apple1, apple2);
-  hitTheWall(snake);
+  //hitTheWall(snake);
 }
 
 function moveUp(snake) {
   snake.head.y--;
   teleport(snake);
   eat(snake, apple1, apple2);
-  hitTheWall(snake);
+ // hitTheWall(snake);
 }
+var sum = 0;
 
 function checkCollision(snakes) {
   let isCollide = false;
-  //this
   for (let i = 0; i < snakes.length; i++) {
-    for (let j = 0; j < snakes.length; j++) {
-      for (let k = 1; k < snakes[j].body.length; k++) {
-        if (
-          snakes[i].head.x == snakes[j].body[k].x &&
-          snakes[i].head.y == snakes[j].body[k].y
-        ) {
-          isCollide = true;
-        }
+      for (let j = 0; j < snakes.length; j++) {
+          for (let k = 1; k < snakes[j].body.length; k++) {
+              if (snakes[i].head.x == snakes[j].body[k].x && snakes[i].head.y == snakes[j].body[k].y) {
+                  
+                life.length--;
+                  sum -= 20;
+                  
+                  if(life.length == 0){
+                      isCollide = true;
+                  }
+                  
+              }
+          }
       }
-    }
   }
+
+  //check collision wall and snake
+  for (let i = 0; i < wallX.length; i++) {
+    if (snakes.head.x === wallX[i] && (snakes.direction == 2 || snakes.direction == 3)) {
+        if (snakes.head.y === wallY[i] || snakes.head.y === wallY[i]) {
+            
+          soundEffect.play();
+            snakes.life--;
+            
+            
+            if (snakes.life == 0) {
+                isCollide = true;
+            }
+        }
+    }
+    if (snakes.head.y === wallY[i] && (snakes.direction == 0 || snakes.direction == 1)) {
+        if (snakes.head.x === wallX[i] || snakes.head.x === wallX[i]) {
+            
+          soundEffect.play();
+            snakes.life--;
+            
+           
+            if (snakes.life == 0) {
+                isCollide = true;
+            }
+        }
+    }
+}
+  //check apple on obstacle
+  for (let i = 0; i < wallX.length; i++) {
+      if (apple1.position.x === wallX[i]) {
+          if (apple1.position.y === wallY[i] || apple1.position.y === wallY[i]) {
+              apple1.position = initPosition();
+          }
+      }
+      if (apple2.position.y === wallY[i]) {
+          if (apple2.position.x === wallX[i] || apple2.position.x === wallX[i]) {
+              apple2.position = initPosition();
+          }
+      }
+      if (lifes.position.y === wallY[i]) {
+          if (lifes.position.x === wallX[i] || lifes.position.x === wallX[i]) {
+              lifes.position = initPosition();
+          }
+      }
+  }
+
+  //if collide and life 0 exec code game over
   if (isCollide) {
-    deadAudio.play();
-    alert("Game over");
-    snake1 = initSnake("purple");
-    MOVE_INTERVAL = 150;
+          deadAudio.play();
+          alert("Game over");
+         
+          location.reload();
+          MOVE_INTERVAL = 150;
+          snake1 = initSnake("purple");
+      
   }
   return isCollide;
 }
@@ -519,6 +596,7 @@ function move(snake) {
   } else {
     initGame();
   }
+ 
 }
 
 function moveBody(snake) {
