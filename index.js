@@ -89,6 +89,9 @@ function initSnake(color) {
     health: 3,
   };
 }
+let heartIcon = {
+  position:initPosition()
+};
 var life = [
   {
       x: sum,
@@ -133,7 +136,7 @@ function isPrime(number) {
 
 // start draw life
 function drawLife(ctx, lifes) {
-  let img = document.getElementById("life");
+  let img = document.getElementById("heart");
   ctx.drawImage(
     img,
     lifes.position.x * CELL_SIZE,
@@ -386,6 +389,18 @@ function draw() {
       );
     }
 
+    //draw heart
+    let heartImg = document.getElementById("heart");
+    for(var i = 0; i < life.length; i++){
+    
+      ctx.drawImage(
+          heartImg,
+          life[i].x,
+          life[i].y,
+          CELL_SIZE,
+          CELL_SIZE
+      );   
+  }
     let img = document.getElementById("apple");
     ctx.drawImage(
       img,
@@ -448,11 +463,11 @@ function eat(snake, apple1, apple2) {
     snake.body.push({ x: snake.head.x, y: snake.head.y });
   }else if (snake.head.x == lifes.position.x && snake.head.y == lifes.position.y && isPrime(snake.score)) {
     lifes.position = initPosition();
-    snake.health++;
+    snake.lifes++;
     //var msk = document.getElementById("getHealth");
     eatSound.play();
     for(var j = 0; j < snake.lifes; j++){
-        if(snake.health === 1){
+        if(snake.lifes === 1){
             life.push({x: sum + 60, y: 0});
             sum += 20;
         }
@@ -497,11 +512,11 @@ function checkCollision(snakes) {
       for (let j = 0; j < snakes.length; j++) {
           for (let k = 1; k < snakes[j].body.length; k++) {
               if (snakes[i].head.x == snakes[j].body[k].x && snakes[i].head.y == snakes[j].body[k].y) {
-                  snake1.health--;
+                  life.length--;
                    deadAudio.play();
                    
                   sum -= 20;
-                  if(snake1.health == 0){
+                  if(life.length == 0){
                       
                       isCollide = true;
                   }
@@ -517,8 +532,8 @@ function checkCollision(snakes) {
         if (snake1.head.y === wallY[i] || snake1.head.y === wallY[i]) {
             deadAudio.play();
        
-            snake1.health--;
-            if (snake1.health == 0) {
+            life.length--;
+            if (life.length == 0) {
               
                 isCollide = true;
             }
