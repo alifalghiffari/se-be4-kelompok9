@@ -11,26 +11,30 @@ const DIRECTION = {
   DOWN: 3,
 };
 let MOVE_INTERVAL = 150;
+let level = 1;
 
 let eatSound = new Audio();
 let levelAudio = new Audio();
 let deadAudio = new Audio();
 let doneAudio = new Audio();
+let hitWallAudio = new Audio();
 
 eatSound.src = "./assets/audio/eat.mp3";
 levelAudio.src = "./assets/audio/level-up.mp3";
 deadAudio.src = "./assets/audio/game-over.mp3";
+hitWallAudio.src = "./assets/audio/hit-wall.wav";
 doneAudio.src = "./assets/audio/done.mp3";
+
 var sum = 0;
 // declare wall
 var wallX = [];
 var wallY = [];
 var levelWall2 = [
   {
-      x1: 4,
-      x2: 15,
-      y: 3,
-  }
+    x1: 4,
+    x2: 15,
+    y: 3,
+  },
 ];
 var levelWall3 = [
   {
@@ -51,11 +55,6 @@ var levelWall5 = [
       x: 4,
       y1: 15,
       y2: 15,
-  },
-  {
-      x: 19,
-      y1: 7,
-      y2: 20,
   }
 ];
 // end declare wall
@@ -90,20 +89,20 @@ function initSnake(color) {
   };
 }
 let heartIcon = {
-  position:initPosition()
+  position: initPosition(),
 };
 var life = [
   {
-      x: sum,
-      y: 0
+    x: sum,
+    y: 0,
   },
   {
-      x: sum + 20,
-      y: 0
+    x: sum + 20,
+    y: 0,
   },
   {
-      x: sum + 40,
-      y: 0
+    x: sum + 40,
+    y: 0,
   },
 ];
 let lifes = {
@@ -206,10 +205,6 @@ function drawSpeed() {
 }
 // end draw speed
 
-// start draw health
-
-// end draw health
-
 // initial wall
 function initWall2() {
   for (let i = 0; i < levelWall2.length; i++) {
@@ -260,9 +255,7 @@ function createWall() {
 
 //snake hit wall
 function stop(snake) {
- 
   snake.direction = DIRECTION.STOP;
-  
 }
 
 function reStart() {
@@ -280,8 +273,11 @@ function hitTheWall(snake) {
       (snake.direction == 2 || snake.direction == 3)
     ) {
       if (snake.head.y - 1 === wallY[i] || snake.head.y + 1 === wallY[i]) {
-        stop(snake);
-        reStart();
+        if (life.length == 0) {
+          deadAudio.play();
+          stop(snake);
+          reStart();
+        }
       }
     }
 
@@ -290,8 +286,11 @@ function hitTheWall(snake) {
       (snake.direction == 0 || snake.direction == 1)
     ) {
       if (snake.head.x - 1 === wallX[i] || snake.head.x + 1 === wallX[i]) {
-        stop(snake);
-        reStart();
+        if (life.length == 0) {
+          deadAudio.play();
+          stop(snake);
+          reStart();
+        }
       }
     }
   }
@@ -299,10 +298,9 @@ function hitTheWall(snake) {
 // end snake hit wall
 
 // level statement
-let level = 1;
 function initLevel(snake) {
   if (level === 1 && snake.score === 5) {
-    levelUp();
+    levelUp(level);
     MOVE_INTERVAL -= 20;
     initWall2();
     
@@ -322,7 +320,7 @@ function initLevel(snake) {
     MOVE_INTERVAL -= 20;
     initWall5();
   }
-  if (level === 5 && snake.score === 25) {
+  if (level > 5 && snake.score === 25) {
     doneAudio.play();
     alert("Congratulation");
     reStart();
@@ -343,6 +341,7 @@ function levelUp() {
     levelAudio.play();
   } else if (level == 5) {
     alert("Level Up To : " + level);
+    levelAudio.play();
   }
 }
 
@@ -354,23 +353,44 @@ function draw() {
 
     ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
-    // draw snake head 
-        if (snake1.direction == 0) {
-            let imgSnakeHead = document.getElementById("snake-head-left");
-            ctx.drawImage(imgSnakeHead, snake1.head.x * CELL_SIZE, snake1.head.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
-        }
-        else if (snake1.direction == 1) {
-            let imgSnakeHead = document.getElementById("snake-head-right");
-            ctx.drawImage(imgSnakeHead, snake1.head.x * CELL_SIZE, snake1.head.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
-        }
-        else if (snake1.direction == 2) {
-            let imgSnakeHead = document.getElementById("snake-head-up");
-            ctx.drawImage(imgSnakeHead, snake1.head.x * CELL_SIZE, snake1.head.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
-        }
-        else if (snake1.direction == 3) {
-            let imgSnakeHead = document.getElementById("snake-head-down");
-            ctx.drawImage(imgSnakeHead, snake1.head.x * CELL_SIZE, snake1.head.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
-        }
+    // draw snake head
+    if (snake1.direction == 0) {
+      let imgSnakeHead = document.getElementById("snake-head-left");
+      ctx.drawImage(
+        imgSnakeHead,
+        snake1.head.x * CELL_SIZE,
+        snake1.head.y * CELL_SIZE,
+        CELL_SIZE,
+        CELL_SIZE
+      );
+    } else if (snake1.direction == 1) {
+      let imgSnakeHead = document.getElementById("snake-head-right");
+      ctx.drawImage(
+        imgSnakeHead,
+        snake1.head.x * CELL_SIZE,
+        snake1.head.y * CELL_SIZE,
+        CELL_SIZE,
+        CELL_SIZE
+      );
+    } else if (snake1.direction == 2) {
+      let imgSnakeHead = document.getElementById("snake-head-up");
+      ctx.drawImage(
+        imgSnakeHead,
+        snake1.head.x * CELL_SIZE,
+        snake1.head.y * CELL_SIZE,
+        CELL_SIZE,
+        CELL_SIZE
+      );
+    } else if (snake1.direction == 3) {
+      let imgSnakeHead = document.getElementById("snake-head-down");
+      ctx.drawImage(
+        imgSnakeHead,
+        snake1.head.x * CELL_SIZE,
+        snake1.head.y * CELL_SIZE,
+        CELL_SIZE,
+        CELL_SIZE
+      );
+    }
 
     for (let i = 1; i < snake1.body.length; i++) {
       //membuat body ular
@@ -386,16 +406,9 @@ function draw() {
 
     //draw heart
     let heartImg = document.getElementById("heart");
-    for(var i = 0; i < life.length; i++){
-    
-      ctx.drawImage(
-          heartImg,
-          life[i].x,
-          life[i].y,
-          CELL_SIZE,
-          CELL_SIZE
-      );   
-  }
+    for (var i = 0; i < life.length; i++) {
+      ctx.drawImage(heartImg, life[i].x, life[i].y, CELL_SIZE, CELL_SIZE);
+    }
     let img = document.getElementById("apple");
     ctx.drawImage(
       img,
@@ -420,7 +433,6 @@ function draw() {
     drawLevel();
     drawScore(snake1);
     drawSpeed(snake1);
-  
     initLevel(snake1);
   }, REDRAW_INTERVAL);
 }
@@ -456,19 +468,23 @@ function eat(snake, apple1, apple2) {
     snake.score++;
     snake.scoreReset++;
     snake.body.push({ x: snake.head.x, y: snake.head.y });
-  }else if (snake.head.x == lifes.position.x && snake.head.y == lifes.position.y && isPrime(snake.score)) {
+  } else if (
+    snake.head.x == lifes.position.x &&
+    snake.head.y == lifes.position.y &&
+    isPrime(snake.score)
+  ) {
     lifes.position = initPosition();
     snake.lifes++;
     //var msk = document.getElementById("getHealth");
     eatSound.play();
-    for(var j = 0; j < snake.lifes; j++){
-        if(snake.lifes === 1){
-            life.push({x: sum + 60, y: 0});
-            sum += 20;
-        }
-    } 
+    for (var j = 0; j < snake.lifes; j++) {
+      if (snake.lifes === 1) {
+        life.push({ x: sum + 60, y: 0 });
+        sum += 20;
+      }
+    }
     snake.lifes = 0;
-}
+  }
 
   snake.lifes = 0;
 }
@@ -477,33 +493,49 @@ function moveLeft(snake) {
   snake.head.x--;
   teleport(snake);
   eat(snake, apple1, apple2);
- // hitTheWall(snake);
+  // hitTheWall(snake);
 }
 
 function moveRight(snake) {
   snake.head.x++;
   teleport(snake);
   eat(snake, apple1, apple2);
- // hitTheWall(snake);
+  // hitTheWall(snake);
 }
 
 function moveDown(snake) {
   snake.head.y++;
   teleport(snake);
   eat(snake, apple1, apple2);
- // hitTheWall(snake);
+  // hitTheWall(snake);
 }
 
 function moveUp(snake) {
   snake.head.y--;
   teleport(snake);
   eat(snake, apple1, apple2);
- // hitTheWall(snake);
+  // hitTheWall(snake);
 }
 
 function checkCollision(snakes) {
   let isCollide = false;
   for (let i = 0; i < snakes.length; i++) {
+
+    for (let j = 0; j < snakes.length; j++) {
+      for (let k = 1; k < snakes[j].body.length; k++) {
+        if (
+          snakes[i].head.x == snakes[j].body[k].x &&
+          snakes[i].head.y == snakes[j].body[k].y
+        ) {
+          sum -= 20;
+          hitWallAudio.play();
+          if (life.length == 0) {
+            deadAudio.play();
+            snake1 = initSnake();
+            stop(snake1);
+            reStart();
+            isCollide = true;
+
       for (let j = 0; j < snakes.length; j++) {
           for (let k = 1; k < snakes[j].body.length; k++) {
               if (snakes[i].head.x == snakes[j].body[k].x && snakes[i].head.y == snakes[j].body[k].y) {
@@ -516,12 +548,30 @@ function checkCollision(snakes) {
                   }
                   
               }
+
           }
+        }
       }
+    }
   }
 
   //check collision wall and snake
   for (let i = 0; i < wallX.length; i++) {
+
+    if (
+      snake1.head.x === wallX[i] &&
+      (snake1.direction == 2 || snake1.direction == 3)
+    ) {
+      if (snake1.head.y === wallY[i] || snake1.head.y === wallY[i]) {
+        hitWallAudio.play();
+        life.length--;
+        if (life.length == 0) {
+          deadAudio.play();
+          reStart();
+          snake1 = initSnake();
+          stop(snake1);
+          isCollide = true;
+
     if (snake1.head.x === wallX[i] && (snake1.direction == 2 || snake1.direction == 3)) {
         if (snake1.head.y === wallY[i] || snake1.head.y === wallY[i]) {
             deadAudio.play();
@@ -531,8 +581,25 @@ function checkCollision(snakes) {
               
                 isCollide = true;
             }
+
         }
+      }
     }
+
+    if (
+      snake1.head.y === wallY[i] &&
+      (snake1.direction == 0 || snake1.direction == 1)
+    ) {
+      if (snake1.head.x === wallX[i] || snake1.head.x === wallX[i]) {
+        hitWallAudio.play();
+        life.length--;
+        if (life.length == 0) {
+          deadAudio.play();
+          reStart();
+          snake1 = initSnake();
+          stop(snake1);
+          isCollide = true;
+
     if (snake1.head.y === wallY[i] && (snake1.direction == 0 || snake1.direction == 1)) {
         if (snake1.head.x === wallX[i] || snake1.head.x === wallX[i]) {
             deadAudio.play();
@@ -541,51 +608,38 @@ function checkCollision(snakes) {
             if (snake1.health == 0) {
                 isCollide = true;
             }
+
         }
+      }
     }
-}
+  }
 
   //code for check apple and health so it doesn't appear in the obstacle
   for (let i = 0; i < wallX.length; i++) {
-      if (apple1.position.x === wallX[i]) {
-          if (apple1.position.y === wallY[i] || apple1.position.y === wallY[i]) {
-              apple1.position = initPosition();
-          }
+    if (apple1.position.x === wallX[i]) {
+      if (apple1.position.y === wallY[i] || apple1.position.y === wallY[i]) {
+        apple1.position = initPosition();
       }
-      if (apple2.position.y === wallY[i]) {
-          if (apple2.position.x === wallX[i] || apple2.position.x === wallX[i]) {
-              apple2.position = initPosition();
-          }
+    }
+    if (apple2.position.y === wallY[i]) {
+      if (apple2.position.x === wallX[i] || apple2.position.x === wallX[i]) {
+        apple2.position = initPosition();
       }
-      if (lifes.position.y === wallY[i]) {
-          if (lifes.position.x === wallX[i] || lifes.position.x === wallX[i]) {
-              lifes.position = initPosition();
-          }
+    }
+    if (lifes.position.y === wallY[i]) {
+      if (lifes.position.x === wallX[i] || lifes.position.x === wallX[i]) {
+        lifes.position = initPosition();
       }
+    }
   }
 
   //if collide and life 0 exec code game over
   if (isCollide) {
-          deadAudio.play();
-          alert("Game over");
-          // life = [
-          //   {
-          //       x: sum,
-          //       y: 0
-          //   },
-          //   {
-          //       x: sum + 20,
-          //       y: 0
-          //   },
-          //   {
-          //       x: sum + 40,
-          //       y: 0
-          //   },
-          // ];
-          location.reload();
-          MOVE_INTERVAL = 150;
-          snake1 = initSnake("purple");
-      
+    deadAudio.play();
+    alert("Game over");
+    location.reload();
+    MOVE_INTERVAL = 150;
+    snake1 = initSnake("purple");
   }
   return isCollide;
 }
