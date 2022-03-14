@@ -367,15 +367,23 @@ function draw() {
 
     ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
-    //membuat kepala ular
-    var headImg = document.getElementById("head");
-    ctx.drawImage(
-      headImg,
-      snake1.head.x * CELL_SIZE,
-      snake1.head.y * CELL_SIZE,
-      CELL_SIZE,
-      CELL_SIZE
-    );
+    // draw snake head 
+        if (snake1.direction == 0) {
+            let imgSnakeHead = document.getElementById("snake-head-left");
+            ctx.drawImage(imgSnakeHead, snake1.head.x * CELL_SIZE, snake1.head.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+        }
+        else if (snake1.direction == 1) {
+            let imgSnakeHead = document.getElementById("snake-head-right");
+            ctx.drawImage(imgSnakeHead, snake1.head.x * CELL_SIZE, snake1.head.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+        }
+        else if (snake1.direction == 2) {
+            let imgSnakeHead = document.getElementById("snake-head-up");
+            ctx.drawImage(imgSnakeHead, snake1.head.x * CELL_SIZE, snake1.head.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+        }
+        else if (snake1.direction == 3) {
+            let imgSnakeHead = document.getElementById("snake-head-down");
+            ctx.drawImage(imgSnakeHead, snake1.head.x * CELL_SIZE, snake1.head.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+        }
 
     for (let i = 1; i < snake1.body.length; i++) {
       //membuat body ular
