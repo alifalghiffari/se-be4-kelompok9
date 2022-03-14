@@ -433,7 +433,7 @@ function draw() {
     drawLevel();
     drawScore(snake1);
     drawSpeed(snake1);
-    drawHealth(snake1);
+    //drawHealth(snake1);
     initLevel(snake1);
   }, REDRAW_INTERVAL);
 }
@@ -522,7 +522,6 @@ function checkCollision(snakes) {
               if (snakes[i].head.x == snakes[j].body[k].x && snakes[i].head.y == snakes[j].body[k].y) {
                   life.length--;
                    deadAudio.play();
-                   
                   sum -= 20;
                   if(life.length == 0){
                       
@@ -539,7 +538,7 @@ function checkCollision(snakes) {
     if (snake1.head.x === wallX[i] && (snake1.direction == 2 || snake1.direction == 3)) {
         if (snake1.head.y === wallY[i] || snake1.head.y === wallY[i]) {
             deadAudio.play();
-       
+            sum -= 20;
             life.length--;
             if (life.length == 0) {
               
@@ -550,7 +549,7 @@ function checkCollision(snakes) {
     if (snake1.head.y === wallY[i] && (snake1.direction == 0 || snake1.direction == 1)) {
         if (snake1.head.x === wallX[i] || snake1.head.x === wallX[i]) {
             deadAudio.play();
-           
+            sum -= 20;
             snake1.health--;
             if (snake1.health == 0) {
                 isCollide = true;
