@@ -528,12 +528,8 @@ function checkCollision(snakes) {
         ) {
           life.length--;
           sum -= 20;
-
           if (life.length == 0) {
             deadAudio.play();
-            snake1 = initSnake();
-            stop(snake1);
-            reStart();
             isCollide = true;
           } else {
             hitWallAudio.play();
@@ -551,11 +547,9 @@ function checkCollision(snakes) {
     ) {
       if (snake1.head.y === wallY[i] || snake1.head.y === wallY[i]) {
         life.length--;
+        sum -= 20;
         if (life.length == 0) {
           deadAudio.play();
-          reStart();
-          snake1 = initSnake();
-          stop(snake1);
           isCollide = true;
         } else {
           hitWallAudio.play();
@@ -568,11 +562,9 @@ function checkCollision(snakes) {
     ) {
       if (snake1.head.x === wallX[i] || snake1.head.x === wallX[i]) {
         life.length--;
+        sum -= 20;
         if (life.length == 0) {
           deadAudio.play();
-          reStart();
-          snake1 = initSnake();
-          stop(snake1);
           isCollide = true;
         } else {
           hitWallAudio.play();
@@ -603,15 +595,11 @@ function checkCollision(snakes) {
   //if collide and life 0 exec code game over
   if (isCollide == true) {
     deadAudio.play();
-    let result = alert("You lose");
-    if (result == true) {
-      location.reload();
-      MOVE_INTERVAL = 150;
-      snake1 = initSnake("purple");
-    } else {
-      snake1 = initSnake("purple");
-      stop(snake1);
-    }
+    alert("Game over");
+    location.reload();
+    MOVE_INTERVAL = 150;
+    snake1 = initSnake("purple");
+    reStart();
   }
   return isCollide;
 }
