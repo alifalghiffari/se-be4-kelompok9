@@ -13,6 +13,7 @@ const DIRECTION = {
 let MOVE_INTERVAL = 150;
 let level = 1;
 
+// audio
 let eatSound = new Audio();
 let levelAudio = new Audio();
 let deadAudio = new Audio();
