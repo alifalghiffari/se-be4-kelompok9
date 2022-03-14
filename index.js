@@ -527,11 +527,12 @@ function checkCollision(snakes) {
           snakes[i].head.y == snakes[j].body[k].y
         ) {
           life.length--;
-          hitWallAudio.play();
           sum -= 20;
           if (life.length == 0) {
             deadAudio.play();
             isCollide = true;
+          } else {
+            hitWallAudio.play();
           }
         }
       }
@@ -545,12 +546,13 @@ function checkCollision(snakes) {
       (snake1.direction == 2 || snake1.direction == 3)
     ) {
       if (snake1.head.y === wallY[i] || snake1.head.y === wallY[i]) {
-        hitWallAudio.play();
         life.length--;
         sum -= 20;
         if (life.length == 0) {
           deadAudio.play();
           isCollide = true;
+        } else {
+          hitWallAudio.play();
         }
       }
     }
@@ -559,12 +561,13 @@ function checkCollision(snakes) {
       (snake1.direction == 0 || snake1.direction == 1)
     ) {
       if (snake1.head.x === wallX[i] || snake1.head.x === wallX[i]) {
-        hitWallAudio.play();
         life.length--;
         sum -= 20;
         if (life.length == 0) {
           deadAudio.play();
           isCollide = true;
+        } else {
+          hitWallAudio.play();
         }
       }
     }
@@ -590,7 +593,7 @@ function checkCollision(snakes) {
   }
 
   //if collide and life 0 exec code game over
-  if (isCollide) {
+  if (isCollide == true) {
     deadAudio.play();
     alert("Game over");
     location.reload();
