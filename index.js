@@ -526,6 +526,7 @@ function checkCollision(snakes) {
           snakes[i].head.x == snakes[j].body[k].x &&
           snakes[i].head.y == snakes[j].body[k].y
         ) {
+          life.length--;
           sum -= 20;
           hitWallAudio.play();
           if (life.length == 0) {
